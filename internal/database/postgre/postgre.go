@@ -53,16 +53,17 @@ type DataBaseHelper struct {
 }
 
 func NewDB() (*PostgreClientDB, error) {
-	const (
-		host     = "viaduct.proxy.rlwy.net"
-		port     = "16561"
-		user     = "postgres"
-		password = "rfyQdUUnyLmsPiXKEfReoTDhpPWlPChw"
-		dbname   = "railway"
-	)
-
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname)
+	//const (
+	//	host     = "viaduct.proxy.rlwy.net"
+	//	port     = "5432"
+	//	user     = "postgres"
+	//	password = "rfyQdUUnyLmsPiXKEfReoTDhpPWlPChw"
+	//	dbname   = "railway"
+	//)
+	//
+	//psqlInfo := fmt.Sprintf("host=%v port=%d user=%v password=%v dbname=%v",
+	//	host, port, user, password, dbname)
+	psqlInfo := "postgresql://postgres:rfyQdUUnyLmsPiXKEfReoTDhpPWlPChw@viaduct.proxy.rlwy.net:16561/railway"
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
 		//panic(err)
