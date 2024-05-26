@@ -48,7 +48,7 @@ func GetClients(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClien
 
 // IndexHandler обрабатывает запросы к главной странице
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-
+	fmt.Println(r.RemoteAddr)
 	tmpl, err := template.ParseFiles("web/index.html")
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
