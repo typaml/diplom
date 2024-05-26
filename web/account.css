@@ -1,0 +1,114 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background: linear-gradient(to right, #007bff, #0056b3); 
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+nav {
+    text-align: center; 
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0 auto; 
+    padding: 0;
+    display: inline-block; 
+}
+
+nav ul li {
+    margin-right: 90px; 
+    display: inline; 
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ccc;
+}
+
+main {
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+#account-info, #login-form {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+#account-info h2, #login-form h2 {
+    margin-top: 0;
+}
+
+#account-info table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#account-info table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+#account-info table td:first-child {
+    font-weight: bold;
+}
+
+#login-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#login-form input[type="text"],
+#login-form input[type="password"],
+#login-form input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#login-form input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+
+#registration-form label {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#registration-form input[type="text"],
+#registration-form input[type="password"],
+#registration-form input[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+#registration-form input[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+

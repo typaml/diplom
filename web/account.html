@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM-система: Аккаунт</title>
+    <link rel="stylesheet" href="/web/account.css">
+    <style>
+        /* Ваш CSS код здесь */
+    </style>
+</head>
+<body>
+    <header>
+        <h1>CRM-система: Аккаунт</h1>
+        <nav>
+            <ul>
+                <li><a href="index">Рабочий стол</a></li>
+                <li><a href="clients">Клиенты</a></li>
+                <li><a href="analytics">Аналитика</a></li>
+                <li><a href="notifications">Задачи</a></li>
+                <li><a href="account">Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="account-info">
+            <!-- Таблица с информацией о пользователе -->
+            <table>
+                <tr>
+                    <td>Имя:</td>
+                    <td><input type="text" value="{{Name}}"></td>
+                </tr>
+                <tr>
+                    <td>Фамилия:</td>
+                    <td ><input type="text" value="{{SurName}}"></td>
+                </tr>
+                <tr>
+                    <td>Должность:</td>
+                    <td>...</td>
+                </tr>
+                <tr>
+                    <td>Личный телефон:</td>
+                    <td id="personal-phone">...</td>
+                </tr>
+                <tr>
+                    <td>Внутренний телефон:</td>
+                    <td id="internal-phone">...</td>
+                </tr>
+                <tr>
+                    <td>Почта:</td>
+                    <td id="email">...</td>
+                </tr>
+                <tr>
+                    <td>Права доступа:</td>
+                    <td id="access-rights">...</td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- Форма для входа -->
+        <div id="login-form">
+            <h2>Вход</h2>
+            <form action="/login" method="post">
+                <label for="login-username">Логин:</label>
+                <input type="text" id="login-username" name="username" required><br><br>
+                <label for="login-password">Пароль:</label>
+                <input type="password" id="login-password" name="password" required><br><br>
+                <input type="submit" value="Войти">
+            </form>
+        </div>
+
+        <!-- Форма для регистрации -->
+        <div id="registration-form">
+            <h2>Регистрация</h2>
+            <form action="/register" method="post">
+                <label for="register-username">Логин:</label>
+                <input type="text" id="register-username" name="username" required><br><br>
+                <label for="register-password">Пароль:</label>
+                <input type="password" id="register-password" name="password" required><br><br>
+                <label for="name-user">Имя:</label>
+                <input type="text" id="name-user" name="nameuser" required><br><br>
+                <label for="surname-user">Фамилия:</label>
+                <input type="text" id="surname-user" name="surnameuser" required><br><br>
+                <input type="submit" value="Зарегистрироваться">
+            </form>
+        </div>
+
+        <!-- Кнопка выхода -->
+        <button id="logout-button" style="display:none;">Выйти</button>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var loginForm = document.getElementById('login-form');
+            var registrationForm = document.getElementById('registration-form');
+            var logoutButton = document.getElementById('logout-button');
+            var isAuthenticated = false;
+
+            function hideAuthForms() {
+                loginForm.style.display = 'none';
+                registrationForm.style.display = 'none';
+                logoutButton.style.display = 'inline-block';
+            }
+
+            if (localStorage.getItem('isAuthenticated') === 'true') {
+                isAuthenticated = true;
+                hideAuthForms();
+            }
+
+            loginForm.addEventListener('submit', function() {
+                isAuthenticated = true;
+                localStorage.setItem('isAuthenticated', 'true');
+            });
+
+            registrationForm.addEventListener('submit', function() {
+                isAuthenticated = true;
+                localStorage.setItem('isAuthenticated', 'true');
+            });
+
+            logoutButton.addEventListener('click', function() {
+                isAuthenticated = false;
+                localStorage.setItem('isAuthenticated', 'false');
+                loginForm.style.display = 'block';
+                registrationForm.style.display = 'block';
+                logoutButton.style.display = 'none';
+                // Очищаем поля ввода в формах
+                document.getElementById('login-username').value = '';
+                document.getElementById('login-password').value = '';
+                document.getElementById('register-username').value = '';
+                document.getElementById('register-password').value = '';
+                // Вызов метода /logout
+                window.location.href = '/logout';
+            });
+        });
+    </script>
+</body>
+</html>

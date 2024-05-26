@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM-система: Рабочий стол</title>
+    <link rel="stylesheet" href="/web/index.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <h1>CRM-система: Рабочий стол</h1>
+        <nav>
+            <ul>
+                <li><a href="index">Рабочий стол</a></li>
+                <li><a href="clients">Клиенты</a></li>
+                <li><a href="analytics">Аналитика</a></li>
+                <li><a href="notifications">Задачи</a></li>
+                <li><a href="account">Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        
+        <div class="dashboard-widgets">
+            <div class="dashboard-button">
+                <button id="createClientBtn">Создать клиента</button>
+            </div>
+            <!-- Модальное окно для создания клиента -->
+            <div id="createClientModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <form id="createClientForm">
+                        <label for="name">Имя и фамилия:</label><br>
+                        <input type="text" id="name" name="name"><br>
+                        <label for="email">Email:</label><br>
+                        <input type="email" id="email" name="email"><br>
+                        <label for="phone">Телефон:</label><br>
+                        <input type="tel" id="phone" name="phone"><br>
+                        <label for="status">Статус:</label><br>
+                        <input type="text" id="status" name="status"><br>
+                        <label for="region">Регион:</label><br>
+                        <input type="text" id="region_name" name="region_name"><br>
+                        <label for="marketingEvent">Маркетинговый ивент:</label><br>
+                        <input type="text" id="marketing_event" name="marketing_event"><br>
+                        <input type="submit" value="Создать">
+                    </form>
+                </div>
+            </div>
+            <div class="dashboard-widget">
+            <!-- Статистика по статусам клиентов -->
+            <div class="widget" onclick="redirectToFilteredPage(event, 'активный')">
+                <h2>Статусы:</h2>
+                <canvas id="statusChart"></canvas>
+            </div>
+
+            <div class="widget" id="marketingWidget">
+                <h2>Маркетинговые ивенты:</h2>
+                <canvas id="marketingChart"></canvas>
+            </div>
+            
+            <div class="widget">
+                <h2>Регионы:</h2>
+                <canvas id="regionChart"></canvas>
+            </div>
+            <div class="widget">
+                <h2>Количество звонков за сегодня</h2>
+                <canvas id="callsChart"></canvas>
+            </div>
+            <div class="widget">
+                <h2>Ответственные:</h2>
+                <canvas id="userClientsChart"></canvas>
+            </div>            
+            
+            
+         </div>
+        </div>
+    </main>
+    <script src="/web/dashboards.js"></script>
+</body>
+</html>

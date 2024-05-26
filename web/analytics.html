@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM-система: Аналитика</title>
+    <link rel="stylesheet" href="/web/analytics.css">
+</head>
+<body>
+    <header>
+        <h1>CRM-система: Аналитика</h1>
+        <nav>
+            <ul>
+                <li><a href="index">Рабочий стол</a></li>
+                <li><a href="clients">Клиенты</a></li>
+                <li><a href="analytics">Аналитика</a></li>
+                <li><a href="notifications">Задачи</a></li>
+                <li><a href="account">Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <div class="time-period">
+            <label for="period-select">Выберите период:</label>
+            <select id="period-select">
+                <option value="day">День</option>
+                <option value="week">Неделя</option>
+                <option value="month">Месяц</option>
+                <option value="year">Год</option>
+            </select>
+        </div>
+
+        <div class="analytics-charts">
+            <h2>Графики аналитики</h2>
+            <div class="chart-container">
+                <canvas id="calls-chart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="sales-chart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/web/analytics.js"></script>
+</body>
+</html>

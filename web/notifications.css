@@ -1,0 +1,79 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background: linear-gradient(to right, #007bff, #0056b3); 
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+nav {
+    text-align: center; 
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0 auto; 
+    padding: 0;
+    display: inline-block; 
+}
+
+nav ul li {
+    margin-right: 90px; 
+    display: inline; 
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ccc;
+}
+
+.widget {
+    margin-left: 15px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px; 
+    padding: 20px; 
+    margin-right: 15px; 
+    transition: background-color 0.3s ease; 
+    display: inline-block; 
+    width: 400px; 
+    height: 600px; 
+}
+
+.today, .tomorrow, .week, .future {
+}
+
+.notifications {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-left : 490px;
+    margin-top: 30px;
+    margin-bottom: 30px;;
+    padding: 10px;
+    width: 900px; 
+    height: 250px; 
+}
+
+.notifications h2 {
+    text-align: center;
+}
+.tasks h2 {
+    margin-left: 50%;
+}
+.tasks h3{
+    text-align: center;
+}

@@ -1,0 +1,199 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+}
+
+header {
+    background: linear-gradient(to right, #007bff, #0056b3); 
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+}
+
+nav {
+    text-align: center; 
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0 auto; 
+    padding: 0;
+    display: inline-block; 
+}
+
+nav ul li {
+    margin-right: 90px; 
+    display: inline; 
+}
+
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    transition: color 0.3s ease;
+}
+
+nav ul li a:hover {
+    color: #ccc;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.client-column,
+.history-column {
+    width: calc(50% - 10px);
+}
+
+.separator {
+    width: 1px;
+    background-color: #ccc;
+    margin: 20px 0;
+}
+
+.client-info {
+    margin-top: 20px;
+    padding: 0 10px;
+}
+
+.client-info table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd; 
+    margin-bottom: 20px;
+}
+
+.client-info th,
+.client-info td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.client-info th {
+    background-color: #f2f2f2;
+}
+
+.client-info input[type="text"] {
+    width: calc(100% - 16px);
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.client-info input[type="text"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.client-info input[type="date"] {
+    width: calc(100% - 16px);
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-top: 4px;
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.client-info input[type="date"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+.client-info button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.client-info button:hover {
+    background-color: #0056b3;
+}
+
+.chat {
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+.chat h2 {
+    margin-bottom: 10px;
+}
+
+.task-form {
+    margin-top: 20px;
+    padding-left: 10px;
+}
+
+.task-form h2 {
+    margin-bottom: 10px;
+}
+
+.task-form #task-input {
+    width: 90%;
+    height: 150px;
+    padding: 10px;
+    resize: none;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.task-form #task-input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.date-container {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+
+.date-container label {
+    margin-bottom: 5px;
+    font-size: 16px;
+    color: #333;
+}
+
+.task-form #task-date {
+    width: 90%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.task-form button {
+    width: 92.5%;
+    padding: 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.task-form button:hover {
+    background-color: #0056b3;
+}

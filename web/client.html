@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM-система: Клиент</title>
+    <link rel="stylesheet" href="/web/client.css">
+</head>
+<body>
+    <header>
+        <h1>CRM-система: Клиент</h1>
+        <nav>
+            <ul>
+                <li><a href="../index">Рабочий стол</a></li>
+                <li><a href="../clients">Клиенты</a></li>
+                <li><a href="../analytics">Аналитика</a></li>
+                <li><a href="../notifications">Задачи</a></li>
+                <li><a href="../account">Аккаунт</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="client-column">
+                <div class="client-info">
+                    <h2>Информация о клиенте</h2>
+                    <form id="client-form">
+                        <input type="hidden" id="client-id" name="client_id" value="{{ClientID}}">
+                        <table>
+                            <tr>
+                                <td>Имя:</td>
+                                <td><input type="text" id="client-name" name="name" value="{{Name}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Email:</td>
+                                <td><input type="text" id="client-email" name="email" value="{{Email}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Телефон:</td>
+                                <td><input type="text" id="client-phone" name="phone" value="{{Phone}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Статус:</td>
+                                <td><input type="text" id="client-status" name="status" value="{{Status}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Регион:</td>
+                                <td><input type="text" id="client-region" name="region" value="{{Region}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Маркетинговый ивент:</td>
+                                <td><input type="text" id="client-event" name="event" value="{{Event}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Дата первого звонка:</td>
+                                <td><input type="datetime-local" id="client-fcall" name="fcall" value="{{FCall}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Дата следующего звонка:</td>
+                                <td><input type="datetime-local" id="client-ncall" name="ncall" value="{{NCall}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Ответственный:</td>
+                                <td><input type="text" id="user-name" name="user_name" value="{{UserName}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Дата оплаты:</td>
+                                <td><input type="date" id="payday" name="payday" value="{{Payday}}"></td>
+                            </tr>
+                            <tr>
+                                <td>Сумма оплаты:</td>
+                                <td><input type="text" id="total-cash" name="total_cash" value="{{Total}}"></td>
+                            </tr>
+                            <tr>
+                                <td><input type="hidden" id="user-id" name="user_id" value="{{UID}}"></td>
+                            </tr>
+                        </table>
+                        <button type="submit" id="save-button">Сохранить</button>
+                        <button type="button" id="delete-button">Удалить клиента</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="history-column">
+                <div class="chat">
+                    <h2>История изменений</h2>
+                    <div id="history-messages"></div>
+                </div>
+
+                <div class="task-form">
+                    <h2>Добавить задачу</h2>
+                    <form id="task-form">
+                        <textarea id="task-input" placeholder="Введите задачу..."></textarea>
+                        <div class="date-container">
+                            <label for="task-date">Дата выполнения:</label>
+                            <input type="datetime-local" id="task-date" name="task_date">
+                        </div>
+                        <button type="submit">Добавить задачу</button>
+                    </form>
+                </div>
+
+                <div class="task-list">
+                    <h2>Список задач</h2>
+                    <div id="task-list"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+    const clientForm = document.getElementById('client-form');
+    const saveButton = document.getElementById('save-button');
+    const historyMessages = document.getElementById('history-messages');
+    const taskForm = document.getElementById('task-form');
+    const taskInput = document.getElementById('task-input');
+    const taskDate = document.getElementById('task-date');
+    const taskList = document.getElementById('task-list');
+
+    function toUTCString(localDateTime) {
+        if (!localDateTime) return '';
+        const localDate = new Date(localDateTime);
+        if (isNaN(localDate)) return '';
+        return new Date(localDate.getTime() - (localDate.getTimezoneOffset() * 60000)).toISOString();
+    }
+
+    clientForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(clientForm);
+
+        // Convert datetime-local fields to UTC before sending
+        formData.set('fcall', toUTCString(document.getElementById('client-fcall').value));
+        formData.set('ncall', toUTCString(document.getElementById('client-ncall').value));
+        formData.set('payday', document.getElementById('payday').value); // Date only, no conversion needed
+
+        fetch('/save-client-changes', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Изменения сохранены');
+                loadHistory();
+            } else {
+                alert('Изменения не сохранены');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Изменения не сохранены');
+        });
+    });
+
+    function formatDate(isoString) {
+        const options = {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false,
+            timeZone: 'UTC'
+        };
+        return new Intl.DateTimeFormat('ru-RU', options).format(new Date(isoString));
+    }
+
+    function loadHistory() {
+        const clientId = document.getElementById('client-id').value;
+        fetch(`/get-client-history?client_id=${clientId}`)
+            .then(response => response.json())
+            .then(data => {
+                historyMessages.innerHTML = '';
+                data.forEach(entry => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.classList.add('message');
+                    messageDiv.innerHTML = `<p><strong>${formatDate(entry.change_date)}:</strong> ${entry.change_description}</p>`;
+                    historyMessages.appendChild(messageDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                historyMessages.innerHTML = '<p>История недоступна</p>';
+            });
+    }
+
+    loadHistory(); // Load history on page load
+
+    taskForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append('client_id', document.getElementById('client-id').value);
+        formData.append('user_id', document.getElementById('user-id').value);
+        formData.append('user_name', document.getElementById('user-name').value);
+        formData.append('description', taskInput.value);
+        formData.append('due_date', toUTCString(taskDate.value)); // Convert local time to UTC
+
+        fetch('/add-task', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Задача добавлена');
+                taskInput.value = '';
+                taskDate.value = '';
+                loadTasks();
+            } else {
+                alert('Не удалось добавить задачу');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Не удалось добавить задачу');
+        });
+    });
+
+    function loadTasks() {
+        const userId = document.getElementById('user-id').value;
+        const clientId = document.getElementById('client-id').value;
+        fetch(`/get-tasks?user_id=${userId}&client_id=${clientId}`)
+            .then(response => response.json())
+            .then(data => {
+                taskList.innerHTML = '';
+                data.forEach(task => {
+                    const taskDiv = document.createElement('div');
+                    taskDiv.classList.add('task');
+                    taskDiv.innerHTML = `<p><strong>Задача для: ${task.username}: </strong><strong>${formatDate(task.due_date)}:</strong> ${task.description}</p>`;
+                    taskList.appendChild(taskDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                taskList.innerHTML = '<p>Список задач недоступен</p>';
+            });
+    }
+
+    loadTasks();
+    const deleteButton = document.getElementById('delete-button');
+
+deleteButton.addEventListener('click', function(event) {
+    const confirmDelete = confirm('Вы уверены, что хотите удалить этого клиента?');
+
+    if (confirmDelete) {
+        const clientId = document.getElementById('client-id').value;
+
+        fetch(`/delete-client?client_id=${clientId}`, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Клиент успешно удален');
+                // Перенаправление на страницу со списком клиентов или другое действие после удаления
+            } else {
+                alert('Не удалось удалить клиента');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Не удалось удалить клиента');
+        });
+    }
+});
+
+});
+    </script>
+</body>
+</html>
