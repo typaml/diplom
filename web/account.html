@@ -57,82 +57,125 @@
                 </tr>
             </table>
         </div>
+        Войти
+        <form id="login-form" method="post">
 
-        <!-- Форма для входа -->
-        <div id="login-form">
-            <h2>Вход</h2>
-            <form action="/login" method="post">
-                <label for="login-username">Логин:</label>
-                <input type="text" id="login-username" name="username" required><br><br>
-                <label for="login-password">Пароль:</label>
-                <input type="password" id="login-password" name="password" required><br><br>
-                <input type="submit" value="Войти">
-            </form>
-        </div>
+            <label for="login-username">Логин:</label>
+            <input type="text" id="login-username" name="username" required><br><br>
+            <label for="login-password">Пароль:</label>
+            <input type="password" id="login-password" name="password" required><br><br>
+            <input type="submit" value="Войти">
+        </form>
+        Зарегистрироваться
+        <form id="registration-form" method="post">
 
-        <!-- Форма для регистрации -->
-        <div id="registration-form">
-            <h2>Регистрация</h2>
-            <form action="/register" method="post">
-                <label for="register-username">Логин:</label>
-                <input type="text" id="register-username" name="username" required><br><br>
-                <label for="register-password">Пароль:</label>
-                <input type="password" id="register-password" name="password" required><br><br>
-                <label for="name-user">Имя:</label>
-                <input type="text" id="name-user" name="nameuser" required><br><br>
-                <label for="surname-user">Фамилия:</label>
-                <input type="text" id="surname-user" name="surnameuser" required><br><br>
-                <input type="submit" value="Зарегистрироваться">
-            </form>
-        </div>
-
+            <label for="register-username">Логин:</label>
+            <input type="text" id="register-username" name="username" required><br><br>
+            <label for="register-password">Пароль:</label>
+            <input type="password" id="register-password" name="password" required><br><br>
+            <label for="name-user">Имя:</label>
+            <input type="text" id="name-user" name="nameuser" required><br><br>
+            <label for="surname-user">Фамилия:</label>
+            <input type="text" id="surname-user" name="surnameuser" required><br><br>
+            <input type="submit" value="Зарегистрироваться">
+        </form>
+        
         <!-- Кнопка выхода -->
         <button id="logout-button" style="display:none;">Выйти</button>
     </main>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var loginForm = document.getElementById('login-form');
-            var registrationForm = document.getElementById('registration-form');
-            var logoutButton = document.getElementById('logout-button');
-            var isAuthenticated = false;
+       document.addEventListener('DOMContentLoaded', function() {
+    var loginForm = document.getElementById('login-form');
+    var registrationForm = document.getElementById('registration-form');
+    var logoutButton = document.getElementById('logout-button');
+    var isAuthenticated = false;
 
-            function hideAuthForms() {
-                loginForm.style.display = 'none';
-                registrationForm.style.display = 'none';
-                logoutButton.style.display = 'inline-block';
+    function hideAuthForms() {
+        loginForm.style.display = 'none';
+        registrationForm.style.display = 'none';
+        logoutButton.style.display = 'inline-block';
+    }
+
+    if (localStorage.getItem('isAuthenticated') === 'true') {
+        isAuthenticated = true;
+        hideAuthForms();
+    }
+
+    function handleResponse(response) {
+        if (response.ok) {
+            return response.json();
+        } else {
+            return response.text().then(text => {
+                try {
+                    return JSON.parse(text);
+                } catch (err) {
+                    throw new Error('Unexpected response format');
+                }
+            }).then(err => { throw err; });
+        }
+    }
+
+    function processAuthResult(result) {
+        if (result.success) {
+            isAuthenticated = true;
+            localStorage.setItem('isAuthenticated', 'true');
+            hideAuthForms();
+            if (result.redirect) {
+                window.location.href = result.redirect;
             }
+        } else {
+            alert('Authentication failed: ' + result.message);
+        }
+    }
 
-            if (localStorage.getItem('isAuthenticated') === 'true') {
-                isAuthenticated = true;
-                hideAuthForms();
-            }
-
-            loginForm.addEventListener('submit', function() {
-                isAuthenticated = true;
-                localStorage.setItem('isAuthenticated', 'true');
-            });
-
-            registrationForm.addEventListener('submit', function() {
-                isAuthenticated = true;
-                localStorage.setItem('isAuthenticated', 'true');
-            });
-
-            logoutButton.addEventListener('click', function() {
-                isAuthenticated = false;
-                localStorage.setItem('isAuthenticated', 'false');
-                loginForm.style.display = 'block';
-                registrationForm.style.display = 'block';
-                logoutButton.style.display = 'none';
-                // Очищаем поля ввода в формах
-                document.getElementById('login-username').value = '';
-                document.getElementById('login-password').value = '';
-                document.getElementById('register-username').value = '';
-                document.getElementById('register-password').value = '';
-                // Вызов метода /logout
-                window.location.href = '/logout';
-            });
+    loginForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(loginForm);
+        fetch('/login', {
+            method: 'POST',
+            body: formData
+        })
+        .then(handleResponse)
+        .then(processAuthResult)
+        .catch(error => {
+            alert('Authentication failed');
+            console.error('There was a problem with the login request: ', error);
         });
+    });
+
+    registrationForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        var formData = new FormData(registrationForm);
+        fetch('/register', {
+            method: 'POST',
+            body: formData
+        })
+        .then(handleResponse)
+        .then(processAuthResult)
+        .catch(error => {
+            alert('Registration failed');
+            console.error('There was a problem with the registration request:', error);
+        });
+    });
+
+    logoutButton.addEventListener('click', function() {
+        isAuthenticated = false;
+        localStorage.setItem('isAuthenticated', 'false');
+        loginForm.style.display = 'block';
+        registrationForm.style.display = 'block';
+        logoutButton.style.display = 'none';
+        // Очищаем поля ввода в формах
+        document.getElementById('login-username').value = '';
+        document.getElementById('login-password').value = '';
+        document.getElementById('register-username').value = '';
+        document.getElementById('register-password').value = '';
+        // Вызов метода /logout
+        window.location.href = '/logout';
+    });
+});
+
+
     </script>
 </body>
 </html>

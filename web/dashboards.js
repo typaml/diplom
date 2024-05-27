@@ -309,12 +309,6 @@ function randomBrightColor() {
     const b = Math.floor(Math.random() * 256); // Синий
     return `rgb(${r}, ${g}, ${b})`;
 }
-function redirectToFilteredPage(event, filter) {
-    event.preventDefault(); // Предотвращаем переход по ссылке
-
-    // Перенаправляем пользователя на вкладку с нужным фильтром
-    window.location.href = '/clients?filterStatus=' + filter;
-}
 
 const createClientBtn = document.getElementById('createClientBtn');
     const createClientModal = document.getElementById('createClientModal');
@@ -362,6 +356,7 @@ const createClientBtn = document.getElementById('createClientBtn');
             // Дополнительные действия при успешном создании клиента
         })
         .catch(error => {
+
             console.error('Error:', error);
             // Обработка ошибок при создании клиента
         })

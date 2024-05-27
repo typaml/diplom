@@ -47,22 +47,13 @@ type User struct {
 	Password string
 	Name     string
 	Surname  string
+	Access   bool
 }
 type DataBaseHelper struct {
 	Name string `json:"name"`
 }
 
 func NewDB() (*PostgreClientDB, error) {
-	//const (
-	//	host     = "viaduct.proxy.rlwy.net"
-	//	port     = "5432"
-	//	user     = "postgres"
-	//	password = "rfyQdUUnyLmsPiXKEfReoTDhpPWlPChw"
-	//	dbname   = "railway"
-	//)
-	//
-	//psqlInfo := fmt.Sprintf("host=%v port=%d user=%v password=%v dbname=%v",
-	//	host, port, user, password, dbname)
 	psqlInfo := "postgresql://postgres:rfyQdUUnyLmsPiXKEfReoTDhpPWlPChw@viaduct.proxy.rlwy.net:16561/railway"
 	db, err := sql.Open("postgres", psqlInfo)
 	if err != nil {
@@ -193,7 +184,21 @@ func GetIdFromName(db *sql.DB, name string) (*User, error) {
 
 	// Поиск пользователя в базе данных
 	var user User
-	err := db.QueryRow("SELECT id, login, password, name, surname FROM public.users WHERE name=$1", name).Scan(&user.ID, &user.Login, &user.Password, &user.Name, &user.Surname)
+	err := db.QueryRow("SELECT id, login, password, name, surname, access FROM public.users WHERE name=$1", name).Scan(&user.ID, &user.Login, &user.Password, &user.Name, &user.Surname, &user.Access)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, err
+		}
+		return nil, err
+	}
+	return &user, nil
+}
+
+func ValidateUsersToChanges(db *sql.DB, id int) (*User, error) {
+
+	// Поиск пользователя в базе данных
+	var user User
+	err := db.QueryRow("SELECT id, login, password, name, surname, access FROM public.users WHERE id=$1", id).Scan(&user.ID, &user.Login, &user.Password, &user.Name, &user.Surname, &user.Access)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, err
