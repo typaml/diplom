@@ -152,6 +152,10 @@ func AccountHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreC
 			Password: "",
 			Name:     "",
 			Surname:  "",
+			Email:    "",
+			Number:   "",
+			Position: "",
+			Access:   false,
 		}
 	}
 	htmlContent, err := os.ReadFile("./web/account.html")
@@ -163,6 +167,16 @@ func AccountHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreC
 	html := string(htmlContent)
 	html = strings.Replace(html, "{{Name}}", user.Name, -1)
 	html = strings.Replace(html, "{{SurName}}", user.Surname, -1)
+	html = strings.Replace(html, "{{Position}}", user.Position, -1)
+	html = strings.Replace(html, "{{Number}}", user.Number, -1)
+	html = strings.Replace(html, "{{Email}}", user.Email, -1)
+	var Access string
+	if user.Access {
+		Access = "Доступ есть"
+	} else {
+		Access = "Доступа нет, обратитесь к администратору"
+	}
+	html = strings.Replace(html, "{{Access}}", Access, -1)
 	// Отправляем HTML-страницу клиенту
 	w.Header().Set("Content-Type", "text/html")
 	fmt.Fprint(w, html)
@@ -234,7 +248,6 @@ func Users(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
 }
-
 func Event(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, loggerString string) {
 	events, err := postgre.GetDataBaseHelper("event", db.Db)
 	if err != nil {
@@ -246,7 +259,13 @@ func Event(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(events)
 }
-
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session-name")
+	session.Values["user_id"] = nil
+	session.Values["login"] = nil
+	session.Save(r, w)
+	http.Redirect(w, r, "../", http.StatusFound)
+}
 func LoginHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, loggerString string) {
 
 	// Получаем данные из формы
@@ -302,15 +321,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreCli
 
 	// Отправляем успешный ответ клиенту
 	w.Header().Set("Content-Type", "application/json")
-	w.Write([]byte(`{"success":true,"message":"Authentication successful"}`))
-}
-
-func LogoutHandler(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "session-name")
-	session.Values["user_id"] = nil
-	session.Values["login"] = nil
-	session.Save(r, w)
-	http.Redirect(w, r, "../", http.StatusFound)
+	w.Write([]byte(`{"success":true,"message":"Authentication successful", "redirect":"/"}`))
 }
 
 func RegisterHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, loggerString string) {
@@ -318,7 +329,8 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, db *postgre.Postgre
 	password := r.FormValue("password")
 	nameuser := r.FormValue("nameuser")
 	surnameuser := r.FormValue("surnameuser")
-
+	email := r.FormValue("email")
+	phone := r.FormValue("phone")
 	w.Header().Set("Content-Type", "application/json")
 
 	count, err := postgre.LoginCountValidate(db.Db, username)
@@ -341,7 +353,7 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, db *postgre.Postgre
 		return
 	}
 
-	checkStatusAdd, err := postgre.AddedNewUsers(db.Db, username, nameuser, surnameuser, hashedPassword)
+	checkStatusAdd, err := postgre.AddedNewUsers(db.Db, username, nameuser, surnameuser, email, phone, hashedPassword)
 	if err != nil {
 		http.Error(w, `{"success":false,"message":"Cannot add user"}`, http.StatusInternalServerError)
 		log.Println(loggerString, "Cannot add user:", err)
@@ -413,12 +425,13 @@ func SaveClientChangesHandler(w http.ResponseWriter, r *http.Request, db *postgr
 		log.Println(loggerString, "Я не смог преобразовать тип", err)
 	}
 	Payday := r.FormValue("payday")
-	ChangeName, _ := postgre.ValidateUsersToChanges(db.Db, session.Values["user_id"].(int))
-	if !ChangeName.Access {
+	CheckName, _ := postgre.ValidateUsersToChanges(db.Db, session.Values["user_id"].(int))
+	if !CheckName.Access {
 		http.Error(w, "Нет прав доступа", http.StatusInternalServerError)
 		log.Println(loggerString, "Нет прав доступа: ", err)
 		return
 	}
+	ChangeName, err := postgre.GetIdFromName(db.Db, Uname)
 	if ChangeName.ID != UID {
 		err = postgre.UpdateClientInfo(db.Db, clientID, ChangeName.ID, TotalCash, name, email, phone, status, region, event, fCall, nCall, Uname, Payday)
 	} else {

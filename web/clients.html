@@ -49,18 +49,18 @@
             <table border="1">
                 <thead>
                     <tr>
-                        <th><a href="#" class="sort" data-column="id">ID</a></th>
-                        <th><a href="#" class="sort" data-column="name">Имя</a></th>
-                        <th><a href="#" class="sort" data-column="phone">Телефон</a></th>
-                        <th><a href="#" class="sort" data-column="email">Email</a></th>
-                        <th><a href="#" class="sort" data-column="status">Статус</a></th>
-                        <th><a href="#" class="sort" data-column="region_name">Регион</a></th>
-                        <th><a href="#" class="sort" data-column="users_name">Ответственный</a></th>
-                        <th><a href="#" class="sort" data-column="marketing_event">Маркетинговый ивент</a></th>
-                        <th><a href="#" class="sort" data-column="date_first_call">Дата первого звонка</a></th>
-                        <th><a href="#" class="sort" data-column="date_next_call">Дата следующего звонка</a></th>
-                        <th><a href="#" class="sort" data-column="total">Сумма</a></th>
-                        <th><a href="#" class="sort" data-column="payday">Дата оплаты</a></th>
+                        <th class="sort" data-column="id">ID</th>
+                        <th class="sort" data-column="name">Имя</th>
+                        <th class="sort" data-column="phone">Телефон</th>
+                        <th class="sort" data-column="email">Email</th>
+                        <th class="sort" data-column="status">Статус</th>
+                        <th class="sort" data-column="region_name">Регион</th>
+                        <th class="sort" data-column="users_name">Ответственный</th>
+                        <th class="sort" data-column="marketing_event">Маркетинговый ивент</th>
+                        <th class="sort" data-column="date_first_call">Дата первого звонка</th>
+                        <th class="sort" data-column="date_next_call">Дата следующего звонка</th>
+                        <th class="sort" data-column="total">Сумма</th>
+                        <th class="sort" data-column="payday">Дата оплаты</th>
                     </tr>
                 </thead>
                 <tbody id="all-clients">
@@ -139,92 +139,90 @@
     }
 
     function fetchClients() {
-        const url = new URL('/getclients', window.location.origin);
-        if (sortColumn) {
-            url.searchParams.append('sortColumn', sortColumn);
-            url.searchParams.append('sortOrder', sortOrder);
+    const url = new URL('/getclients', window.location.origin);
+    if (sortColumn) {
+        url.searchParams.append('sortColumn', sortColumn);
+        url.searchParams.append('sortOrder', sortOrder);
+    }
+
+    // Добавление параметров фильтрации
+    const filterId = document.getElementById('filterId').value.trim();
+    if (filterId) url.searchParams.append('filterId', filterId);
+
+    let filterStatus = document.getElementById('filterStatus').value.trim();
+    if (filterStatus) url.searchParams.append('filterStatus', filterStatus);
+    
+    const filterRegion = document.getElementById('filterRegion').value.trim();
+    if (filterRegion) url.searchParams.append('filterRegion', filterRegion);
+
+    const filterResponsible = document.getElementById('filterUsers').value.trim();
+    if (filterResponsible) url.searchParams.append('filterUsers', filterResponsible);
+
+    const filterMarketingEvent = document.getElementById('filterEvent').value.trim();
+    if (filterMarketingEvent) url.searchParams.append('filterEvent', filterMarketingEvent);
+    
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            const allClientsContainer = document.getElementById('all-clients');
+            allClientsContainer.innerHTML = '';
+
+            data.forEach(client => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${client.id}</td>
+                    <td>${client.name}</td>
+                    <td>${client.phone}</td>
+                    <td>${client.email}</td>
+                    <td>${client.status}</td>
+                    <td>${client.region_name}</td>
+                    <td>${client.users_name}</td>
+                    <td>${client.marketing_event}</td>
+                    <td>${client.date_first_call}</td>
+                    <td>${client.date_next_call}</td>
+                    <td>${client.total_cash}</td>
+                    <td>${client.payday}</td>
+                `;
+                row.dataset.clientId = client.id; // Устанавливаем атрибут data-client-id для строки
+                row.addEventListener("click", function(event) {
+                    const clientId = this.dataset.clientId; // Извлекаем ID клиента из атрибута data-client-id строки
+                    redirectToClient(clientId);
+                });
+                allClientsContainer.appendChild(row);
+            });
+        })
+        .catch(error => console.error('Error fetching clients:', error));
+}
+
+document.getElementById('applyFilters').addEventListener('click', fetchClients);
+
+document.querySelectorAll('.sort').forEach(header => {
+    header.addEventListener('click', function(event) {
+        event.preventDefault();
+        const column = this.dataset.column;
+        if (sortColumn === column) {
+            sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
+        } else {
+            sortColumn = column;
+            sortOrder = 'asc';
         }
-
-        // Добавление параметров фильтрации
-        const filterId = document.getElementById('filterId').value.trim();
-        if (filterId) url.searchParams.append('filterId', filterId);
-
-        let filterStatus = document.getElementById('filterStatus').value.trim();
-        if (filterStatus) url.searchParams.append('filterStatus', filterStatus);
-        
-        const filterRegion = document.getElementById('filterRegion').value.trim();
-        if (filterRegion) url.searchParams.append('filterRegion', filterRegion);
-
-        const filterResponsible = document.getElementById('filterUsers').value.trim();
-        if (filterResponsible) url.searchParams.append('filterUsers', filterResponsible);
-
-        const filterMarketingEvent = document.getElementById('filterEvent').value.trim();
-        if (filterMarketingEvent) url.searchParams.append('filterEvent', filterMarketingEvent);
-        
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                const allClientsContainer = document.getElementById('all-clients');
-                allClientsContainer.innerHTML = '';
-
-                data.forEach(clients => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><a href="#" class="client-id-link" data-client-id="${clients.id}">${clients.id}</a></td>
-                        <td>${clients.name}</td>
-                        <td>${clients.phone}</td>
-                        <td>${clients.email}</td>
-                        <td>${clients.status}</td>
-                        <td>${clients.region_name}</td>
-                        <td>${clients.users_name}</td>
-                        <td>${clients.marketing_event}</td>
-                        <td>${clients.date_first_call}</td>
-                        <td>${clients.date_next_call}</td>
-                        <td>${clients.total_cash}</td>
-                        <td>${clients.payday}</td>
-                    `;
-                    allClientsContainer.appendChild(row);
-                });
-
-                document.querySelectorAll(".client-id-link").forEach(link => {
-                    link.addEventListener("click", function(event) {
-                        event.preventDefault();
-                        let clientId = this.dataset.clientId;
-                        redirectToClient(clientId);
-                    });
-                });
-            })
-            .catch(error => console.error('Error fetching clients:', error));
-    }
-
-    document.getElementById('applyFilters').addEventListener('click', fetchClients);
-
-    document.querySelectorAll('.sort').forEach(header => {
-        header.addEventListener('click', function(event) {
-            event.preventDefault();
-            const column = this.dataset.column;
-            if (sortColumn === column) {
-                sortOrder = (sortOrder === 'asc') ? 'desc' : 'asc';
-            } else {
-                sortColumn = column;
-                sortOrder = 'asc';
-            }
-            fetchClients();
-        });
-    });
-
-    window.addEventListener('DOMContentLoaded', (event) => {
-        
         fetchClients();
-        fetchRegion();
-        fetchStatuses(); 
-        fetchUsers();
-        fetchEvent();
     });
+});
 
-    function redirectToClient(clientId) {
-        window.location.href = '/client/' + clientId;
-    }
+window.addEventListener('DOMContentLoaded', (event) => {
+    fetchClients();
+    fetchRegion();
+    fetchStatuses(); 
+    fetchUsers();
+    fetchEvent();
+});
+
+function redirectToClient(clientId) {
+    window.location.href = '/client/' + clientId;
+}
+
+
 </script>
 
 </html>

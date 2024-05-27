@@ -71,44 +71,67 @@ main {
     font-weight: bold;
 }
 
-#login-form label {
+#login-form,
+#registration-form {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 20px;
+    width: calc(50% - 10px); /* Set the width of each form */
+    box-sizing: border-box; /* Consider padding and border in width */
+    float: left; /* Float forms left */
+}
+
+#registration-form {
+    float: right; /* Float registration form right */
+}
+
+#login-form h2,
+#registration-form h2 {
+    margin-top: 0;
+    margin-bottom: 20px; /* Bottom margin for headings */
+}
+
+#login-form label,
+#registration-form label {
     display: block;
     margin-bottom: 10px;
 }
 
 #login-form input[type="text"],
 #login-form input[type="password"],
-#login-form input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-#login-form input[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    cursor: pointer;
-}
-
-
-#registration-form label {
-    display: block;
-    margin-bottom: 10px;
-}
-
+#login-form input[type="submit"],
 #registration-form input[type="text"],
 #registration-form input[type="password"],
+#registration-form input[type="email"],
 #registration-form input[type="submit"] {
-    width: 100%;
+    width: calc(100% - 20px); /* Consider padding */
     padding: 10px;
     margin-bottom: 10px;
+    display: block;
 }
 
+#login-form input[type="submit"],
 #registration-form input[type="submit"] {
     background-color: #007bff;
     color: white;
     border: none;
     cursor: pointer;
+    width: 100%; /* Stretch the button to full width */
+}
+#logout-button {
+    background-color: #dc3545; /* Цвет фона */
+    color: white; /* Цвет текста */
+    border: none;
+    border-radius: 5px; /* Скругление углов */
+    padding: 10px 20px; /* Внутренние отступы */
+    cursor: pointer;
+    position: fixed; /* Позиционирование фиксированное */
+    bottom: 20px; /* Отступ от нижнего края */
+    right: 20px; /* Отступ от правого края */
+    transition: background-color 0.3s; /* Плавное изменение цвета при наведении */
 }
 
+#logout-button:hover {
+    background-color: #c82333; /* Изменение цвета при наведении */
+}

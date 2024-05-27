@@ -47,6 +47,9 @@ type User struct {
 	Password string
 	Name     string
 	Surname  string
+	Email    string
+	Number   string
+	Position string
 	Access   bool
 }
 type DataBaseHelper struct {
@@ -171,7 +174,7 @@ func LoginValidate(db *sql.DB, login string) (*User, error) {
 
 	// Поиск пользователя в базе данных
 	var user User
-	err := db.QueryRow("SELECT id, login, password, name, surname FROM public.users WHERE login=$1", login).Scan(&user.ID, &user.Login, &user.Password, &user.Name, &user.Surname)
+	err := db.QueryRow("SELECT id, login, password, name, surname, email, access, number, position FROM public.users WHERE login=$1", login).Scan(&user.ID, &user.Login, &user.Password, &user.Name, &user.Surname, &user.Email, &user.Access, &user.Number, &user.Position)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, err
@@ -218,8 +221,8 @@ func LoginCountValidate(db *sql.DB, login string) (*int, error) {
 	return &count, nil
 }
 
-func AddedNewUsers(db *sql.DB, login, name, surname string, password []byte) (string, error) {
-	_, err := db.Exec("INSERT INTO public.users (login, password, name, surname) VALUES ($1, $2, $3, $4)", login, string(password), name, surname)
+func AddedNewUsers(db *sql.DB, login, name, surname, email, phone string, password []byte) (string, error) {
+	_, err := db.Exec("INSERT INTO public.users (login, password, name, surname, email, number) VALUES ($1, $2, $3, $4, $5, $6)", login, string(password), name, surname, email, phone)
 	if err != nil {
 		return "", err
 	}

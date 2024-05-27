@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 )
 
 func Run() {
@@ -102,7 +101,8 @@ func Run() {
 	})
 	http.HandleFunc("/logout", rest.LogoutHandler)
 	http.Handle("/web/", http.StripPrefix("/web/", http.FileServer(http.Dir("web"))))
-	port := os.Getenv("PORT")
+	//port := os.Getenv("PORT")
+	port := "8080"
 	log.Println("Сервер заработал на порту: ", port)
 	http.ListenAndServe("0.0.0.0:"+port, nil)
 }

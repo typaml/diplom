@@ -21,88 +21,89 @@
     </header>
     
     <main>
+        <h2>Задачи</h2>
         <div class="tasks">
-            <h2>Задачи</h2>
+
             <div class="widget overdue">
                 <h3>Просроченные</h3>
-                <ul id="overdue-tasks"></ul>
+                <ul id="overdue-tasks" class="task-list"></ul>
             </div>
             <div class="widget today">
                 <h3>На сегодня</h3>
-                <ul id="today-tasks"></ul>
+                <ul id="today-tasks" class="task-list"></ul>
             </div>
             <div class="widget tomorrow">
                 <h3>На завтра</h3>
-                <ul id="tomorrow-tasks"></ul>
+                <ul id="tomorrow-tasks" class="task-list"></ul>
             </div>
             <div class="widget week">
                 <h3>На неделю</h3>
-                <ul id="week-tasks"></ul>
+                <ul id="week-tasks" class="task-list"></ul>
             </div>
             <div class="widget future">
                 <h3>На будущее</h3>
-                <ul id="future-tasks"></ul>
+                <ul id="future-tasks" class="task-list"></ul>
             </div>
         </div>
     </main>
-
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            fetch('/get-tasks-notif')
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    data.forEach(task => {
-                        const taskElement = document.createElement('li');
-                        const taskDate = new Date(task.due_date);
-                        taskElement.textContent = `${task.description} (Выполнить до: ${taskDate.toLocaleString()})`;
-
-                        const executeButton = document.createElement('button');
-                        executeButton.textContent = 'Выполнить';
-                        executeButton.addEventListener('click', function() {
-                            executeTask(task.id); // Функция для выполнения задачи
-                            taskElement.remove(); // Удаление задачи из списка после выполнения
-                        });
-
-                        taskElement.appendChild(executeButton);
-
-                        const now = new Date();
-                        const diffTime = taskDate - now;
-                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-
-                        if (diffTime < 0) {
-                            document.getElementById('overdue-tasks').appendChild(taskElement);
-                        } else if (diffDays === 0) {
-                            document.getElementById('today-tasks').appendChild(taskElement);
-                        } else if (diffDays === 1) {
-                            document.getElementById('tomorrow-tasks').appendChild(taskElement);
-                        } else if (diffDays <= 7) {
-                            document.getElementById('week-tasks').appendChild(taskElement);
-                        } else {
-                            document.getElementById('future-tasks').appendChild(taskElement);
-                        }
-                    });
-                })
-                .catch(error => console.error('Error:', error));
-
-            function executeTask(taskId) {
-                fetch(`/execute-task?id=${taskId}`, {
-                    method: 'DELETE'
-                })
-                .then(response => {
-                    if (response.ok) {
-                        alert('Задача выполнена и удалена');
-                    } else {
-                        alert('Не удалось выполнить задачу');
-                    }
-                })
-                .catch(error => console.error('Error:', error));
+            document.addEventListener('DOMContentLoaded', function() {
+    fetch('/get-tasks-notif')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        });
+            return response.json();
+        })
+        .then(data => {
+            data.forEach(task => {
+                const taskElement = document.createElement('li');
+                const taskDate = new Date(task.due_date);
+                taskElement.textContent = `${task.description} (Выполнить до: ${taskDate.toLocaleString()})`;
+
+                const executeButton = document.createElement('button');
+                executeButton.classList.add('execute-button'); // Добавляем класс
+                executeButton.addEventListener('click', function() {
+                    executeTask(task.id); // Функция для выполнения задачи
+                    taskElement.remove(); // Удаление задачи из списка после выполнения
+                });
+
+                taskElement.appendChild(executeButton);
+
+                const now = new Date();
+                const diffTime = taskDate - now;
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffTime < 0) {
+                    document.getElementById('overdue-tasks').appendChild(taskElement);
+                } else if (diffDays === 0) {
+                    document.getElementById('today-tasks').appendChild(taskElement);
+                } else if (diffDays === 1) {
+                    document.getElementById('tomorrow-tasks').appendChild(taskElement);
+                } else if (diffDays <= 7) {
+                    document.getElementById('week-tasks').appendChild(taskElement);
+                } else {
+                    document.getElementById('future-tasks').appendChild(taskElement);
+                }
+            });
+        })
+        .catch(error => console.error('Error:', error));
+
+    function executeTask(taskId) {
+        fetch(`/execute-task?id=${taskId}`, {
+            method: 'DELETE'
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('Задача выполнена и удалена');
+            } else {
+                alert('Не удалось выполнить задачу');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+});
+
     </script>
 </body>
 </html>

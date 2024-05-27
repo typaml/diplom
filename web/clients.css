@@ -13,6 +13,10 @@ header {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
 }
 
+h2{
+    text-align: center;
+}
+
 nav {
     text-align: center; 
 }
@@ -41,24 +45,51 @@ nav ul li a:hover {
 }
 
 .table-container {
-    width: 100%;
-    overflow-x: auto; 
-    margin-top: 20px;
+    width: 90%; /* Устанавливаем ширину блока таблицы */
+    margin: 20px auto; /* Устанавливаем отступы сверху и снизу, и автоматическое выравнивание по центру по горизонтали */
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
 }
 
 table {
-    width: 120%; 
+    width: 100%;
     border-collapse: collapse;
 }
 
 th, td {
     border: 1px solid #ddd;
-    padding: 8px;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
 }
 
 th {
     background-color: #f2f2f2;
-    text-align: left;
+    cursor: pointer;
+    position: relative;
+}
+
+th:hover {
+    background-color: #ddd;
+}
+
+th::after {
+    content: ' ▲';
+    position: absolute;
+    right: 5px;
+    opacity: 0;
+}
+
+th.sorted-asc::after {
+    content: ' ▼';
+    opacity: 1;
+}
+
+th.sorted-desc::after {
+    content: ' ▲';
+    opacity: 1;
 }
 
 tr:nth-child(even) {
@@ -67,4 +98,46 @@ tr:nth-child(even) {
 
 tr:hover {
     background-color: #f2f2f2;
+}
+
+.filters {
+    width: 91%; /* Устанавливаем ширину блока фильтров */
+    margin: 20px auto; /* Устанавливаем отступы сверху и снизу, и автоматическое выравнивание по центру по горизонтали */
+    padding: 10px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.filters label {
+    margin-right: 5px;
+    padding: 5px;
+    font-weight: bold;
+    margin-left: 6px;
+}
+
+.filters input[type="text"],
+.filters select {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.filters button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #007bff;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.filters button:hover {
+    background-color: #0056b3;
+}
+#applyFilters {
+    margin-left: 20px; /* Добавляем отступ слева */
 }

@@ -29,46 +29,40 @@
             <table>
                 <tr>
                     <td>Имя:</td>
-                    <td><input type="text" value="{{Name}}"></td>
+                    <td><div>{{Name}}</div></td>
                 </tr>
                 <tr>
                     <td>Фамилия:</td>
-                    <td ><input type="text" value="{{SurName}}"></td>
+                    <td ><div>{{SurName}}</div></td>
                 </tr>
                 <tr>
                     <td>Должность:</td>
-                    <td>...</td>
+                    <td ><div>{{Position}}</div></td>
                 </tr>
                 <tr>
                     <td>Личный телефон:</td>
-                    <td id="personal-phone">...</td>
-                </tr>
-                <tr>
-                    <td>Внутренний телефон:</td>
-                    <td id="internal-phone">...</td>
+                    <td ><div>{{Number}}</div></td>
                 </tr>
                 <tr>
                     <td>Почта:</td>
-                    <td id="email">...</td>
+                    <td ><div>{{Email}}</div></td>
                 </tr>
                 <tr>
                     <td>Права доступа:</td>
-                    <td id="access-rights">...</td>
+                    <td ><div>{{Access}}</div></td>
                 </tr>
             </table>
         </div>
-        Войти
         <form id="login-form" method="post">
-
+            <h2>Войти</h2>
             <label for="login-username">Логин:</label>
             <input type="text" id="login-username" name="username" required><br><br>
             <label for="login-password">Пароль:</label>
             <input type="password" id="login-password" name="password" required><br><br>
             <input type="submit" value="Войти">
         </form>
-        Зарегистрироваться
         <form id="registration-form" method="post">
-
+            <h2>Зарегистрироваться</h2>
             <label for="register-username">Логин:</label>
             <input type="text" id="register-username" name="username" required><br><br>
             <label for="register-password">Пароль:</label>
@@ -77,8 +71,13 @@
             <input type="text" id="name-user" name="nameuser" required><br><br>
             <label for="surname-user">Фамилия:</label>
             <input type="text" id="surname-user" name="surnameuser" required><br><br>
+            <label for="register-email">Email:</label>
+            <input type="email" id="register-email" name="email" required><br><br>
+            <label for="register-phone">Телефон:</label>
+            <input type="text" id="register-phone" name="phone" required><br><br>
             <input type="submit" value="Зарегистрироваться">
         </form>
+        
         
         <!-- Кнопка выхода -->
         <button id="logout-button" style="display:none;">Выйти</button>
