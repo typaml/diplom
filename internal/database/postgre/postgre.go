@@ -26,6 +26,7 @@ type Client struct {
 	UsersName     string `json:"users_name"`
 	Payday        string `json:"payday"`
 	Total         int    `json:"total_cash"`
+	Information   string `json:"information"`
 }
 type HistoryEntry struct {
 	ChangeDate        string `json:"change_date"`
@@ -88,7 +89,7 @@ func (db *PostgreClientDB) Close() {
 
 func Select(db *sql.DB, idclients int) (*Client, error) {
 	var client Client
-	if err := db.QueryRow("SELECT id , name, phone, email, status, region_name, user_id, marketing_event, date_first_call, date_next_call, users_name, payday, total FROM public.clients WHERE id = $1", idclients).Scan(&client.ID, &client.Name, &client.Phone, &client.Email, &client.Status, &client.Region, &client.UserID, &client.Event, &client.DateFirstCall, &client.DateNextCall, &client.UsersName, &client.Payday, &client.Total); err != nil {
+	if err := db.QueryRow("SELECT id , name, phone, email, status, region_name, user_id, marketing_event, date_first_call, date_next_call, users_name, payday, total, info FROM public.clients WHERE id = $1", idclients).Scan(&client.ID, &client.Name, &client.Phone, &client.Email, &client.Status, &client.Region, &client.UserID, &client.Event, &client.DateFirstCall, &client.DateNextCall, &client.UsersName, &client.Payday, &client.Total, &client.Information); err != nil {
 		return nil, err
 	}
 

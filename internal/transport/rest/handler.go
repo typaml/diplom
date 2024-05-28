@@ -113,6 +113,7 @@ func ClientHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreCl
 	html = strings.Replace(html, "{{UID}}", strconv.Itoa(client.UserID), -1)
 	html = strings.Replace(html, "{{Total}}", strconv.Itoa(client.Total), -1)
 	html = strings.Replace(html, "{{Payday}}", client.Payday, -1)
+	html = strings.Replace(html, "{{Info}}", client.Information, -1)
 	session, _ := store.Get(r, "session-name")
 	if session.Values["login"] != nil {
 		log.Println(loggerString, session.Values["login"], "visited the client: ", client.ID)
