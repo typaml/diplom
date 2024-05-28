@@ -59,7 +59,7 @@
             data.forEach(task => {
                 const taskElement = document.createElement('li');
                 const taskDate = new Date(task.due_date);
-                taskElement.textContent = `${task.description} (Выполнить до: ${taskDate.toLocaleString()})`;
+                taskElement.textContent = `${task.description} (клиенту с ID ) ${task.client_id} ( )(Выполнить до: ${taskDate.toLocaleString()})`;
 
                 const executeButton = document.createElement('button');
                 executeButton.classList.add('execute-button'); // Добавляем класс
