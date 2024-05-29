@@ -346,21 +346,24 @@ const createClientBtn = document.getElementById('createClientBtn');
             body: JSON.stringify(jsonData), // Преобразуем данные в JSON и отправляем на сервер
         })
         .then(response => {
-            if (!response.ok) {
+            console.log('Response status:', response.status);
+            return response.json().then(data => ({ status: response.status, body: data }));
+        })
+        .then(({ status, body }) => {
+            if (status !== 200) {
                 throw new Error('Failed to create client');
             }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Client created successfully:', data);
+            alert('Клиент создан');
+            console.log('Client created successfully:', body);
             // Дополнительные действия при успешном создании клиента
         })
         .catch(error => {
-
+            alert('Ошибка создания клиента');
             console.error('Error:', error);
             // Обработка ошибок при создании клиента
         })
         .finally(() => {
+            createClientForm.reset();
             createClientModal.style.display = 'none'; // Закрываем модальное окно после отправки данных
         });
         

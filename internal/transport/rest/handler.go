@@ -504,6 +504,16 @@ func AddTaskHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreC
 	description := r.FormValue("description")
 	dueDate := r.FormValue("due_date")
 	userName := r.FormValue("user_name")
+	if description == "" {
+		http.Error(w, "Пустой текст задачи: ", http.StatusBadRequest)
+		log.Println(loggerString, "Пустой текст задачи: ", err)
+		return
+	}
+	if dueDate == "" {
+		http.Error(w, "Пустые время и дата: ", http.StatusBadRequest)
+		log.Println(loggerString, "Пустые время и дата: ", err)
+		return
+	}
 	UsersValidate, _ := postgre.ValidateUsersToChanges(db.Db, session.Values["user_id"].(int))
 	if !UsersValidate.Access {
 		http.Error(w, "Нет доступа: ", http.StatusBadRequest)
@@ -726,8 +736,22 @@ func CreateClientHandler(w http.ResponseWriter, r *http.Request, db *postgre.Pos
 		return
 	}
 
+	response, err := json.Marshal(struct {
+		Message    string         `json:"message"`
+		ClientData postgre.Client `json:"client_data"`
+	}{
+		Message:    "Client data saved successfully",
+		ClientData: clientData,
+	})
+	if err != nil {
+		log.Println(loggerString, "Failed to encode response: ", err)
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Client data saved successfully:\n%+v", clientData)
+	w.Write(response)
 }
 
 func DeleteClientHandler(w http.ResponseWriter, r *http.Request, db *postgre.PostgreClientDB, loggerString string) {
